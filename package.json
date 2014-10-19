@@ -1,0 +1,24 @@
+{
+  "name": "mail-service",
+  "version": "0.0.1",
+  "description": "Centralised template repository that receives json objects, applies a template and sends an email.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/domgom/mail-service"
+  },
+  "keywords": [
+    "mail",
+    "node",
+    "template"
+  ],
+  "author": "domgom@gmail.com",
+  "license": "ASF",
+  "bugs": {
+    "url": "https://github.com/domgom/mail-service/issues"
+  },
+  "homepage": "https://github.com/domgom/mail-service"
+}
