@@ -1,0 +1,1 @@
+curl localhost:8000  --header "x-template: test.hbs" -d '{"name" : "Dom"}'

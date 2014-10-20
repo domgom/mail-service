@@ -1,0 +1,9 @@
+{
+	"defaults": {
+		"from" : "",
+		"subject" : "",
+		"to": "",
+		"cc": "",
+		"cco": ""
+	}
+}
