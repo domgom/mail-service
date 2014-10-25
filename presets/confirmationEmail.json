@@ -1,0 +1,7 @@
+{
+  "template" : "test.hbs",
+
+  "from": "mail@thomascook.com",
+  "subject": "Your booking at Thomascook",
+  "to": ""
+}

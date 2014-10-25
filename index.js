@@ -1,65 +1,55 @@
-
 var http = require('http');
 var fs = require('fs');
 var hbs = require('handlebars');
-var config = require('./config/' + (process.env.NODE_ENV || 'development') + '.json');
+var concat = require('concat-stream');
+var mailer = require('./mailer');
+
+var templates = compileTemplates();
+
+//console.log(templates);
 
 http.createServer(function (req, res) {
-	
-	if (req.method == 'POST') {
-		var jsonString = '';
-		var variables = {};
-		req.on('data', function (data) {
-			jsonString += data;
-		});
-		req.on('end', function () {
-		    variables = JSON.parse(jsonString);
-		});
 
-		var maildata = loadMailData(req);
+    if (req.method == 'POST') {
+        var variables = {};
+        req.pipe(concat(function (body) {
+            variables = JSON.parse(body);
+            var mail_metadata = loadMailMetaData(req);
+            var mail_body = templates[mail_metadata.template](variables);
 
-		fs.readFile(__dirname + "/templates/" + maildata.templatePath, "utf-8", function(error, source){
-  			if(error)
-  				res.status(404).send('Template' + maildata.templatePath +' Not Found');
+            mailer.sendMail(mail_metadata, mail_body, function (error, response) {
+                if (error) {
+                    res.writeHead(500, {"Content-Type": "application/json"});
+                    console.log(error);
+                    res.end('{ "response" : "mail error" }');
+                }
+                res.writeHead(200, {"Content-Type": "application/json"});
+                res.end('{ "response" : "mail sent" }');
+            });
 
-  			var template = hbs.compile(source);
-			var rendered = template(variables);
-
-			//zalgo, do it async
-			sendEmail(maildata,rendered);
-
-			res.writeHead(200, {"Content-Type": "application/json"});
-  			res.end('{ "response" : "mail sent" }');
-		});
-	}
+        }));
+    }
 }).listen(process.argv[2] || 8000);
 
-function loadMailData(req){
-	var presets = require( './presets/' + (req.headers['x-presets'] || 'empty.json'));
-	return { 
-		templatePath : req.headers['x-template'],
-		from : req.headers['x-from'] || presets.from,
-		subject : req.headers['x-subject'] || presets.subject,
-		to : req.headers['x-to'] || presets.to,
-		cc : req.headers['x-cc'] || presets.cc,
-		cco : req.headers['x-cco'] || presets.cco 
-	};
-} 
-
-function sendEmail(maildata, body ){
-	console.log(maildata);
-	console.log(body);
+function loadMailMetaData(req) {
+    var presets = require('./presets/' + (req.headers['x-presets'] || 'empty.json'));
+    var overrided = {};
+    for (var k in presets) {
+        overrided[k] = req.headers['x-' + k] || presets[k];
+    }
+    return overrided;
 }
 
-//not working on subfunctions ?!
-function readVariables(req){
-	var jsonString = '';
-	var variables = {};
-	req.on('data', function (data) {
-		jsonString += data;
-	});
-	req.on('end', function () {
-	    variables = JSON.parse(jsonString);
-	});
-	return variables;  
+function compileTemplates() {
+    var result = {};
+    var templateFiles = fs.readdirSync(__dirname + "/templates/");
+    for (var i in templateFiles) {
+        var name = templateFiles[i];
+
+        fs.readFile(__dirname + "/templates/" + name, "utf-8", function (error, source) {
+            result[name] = hbs.compile(source);
+        });
+
+    }
+    return result;
 }

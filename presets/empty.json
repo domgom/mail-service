@@ -1,9 +1,8 @@
 {
-	"defaults": {
-		"from" : "",
-		"subject" : "",
-		"to": "",
-		"cc": "",
-		"cco": ""
-	}
+  "from": "",
+  "subject": "",
+  "to": "",
+  "cc": "",
+  "cco": "",
+  "templatePath": "empty.hbs"
 }

@@ -1,0 +1,12 @@
+{
+  "transport": {
+    "host": "localhost",
+    "port": 25,
+    "auth": {
+      "user": "username",
+      "pass": "password"
+    },
+    "maxConnections": 5,
+    "maxMessages": 10
+  }
+}
