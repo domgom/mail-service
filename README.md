@@ -1,7 +1,6 @@
 ##mail-service
 ============
-
-Centralised template repository that receives json objects, applies a template and sends an email.
+Centralised template repository that receives a HTTP POST with json data, applies a template and emails it it.
 
 ### Usage
 1) Add a new handlebars template to ```/templates/```
