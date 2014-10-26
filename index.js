@@ -17,8 +17,8 @@ http.createServer(function (req, res) {
 
             mailer.sendMail(mail_metadata, mail_body, function (error, response) {
                 if (error) {
-                    res.writeHead(500, {"Content-Type": "application/json"});
                     console.log(error);
+                    res.writeHead(500, {"Content-Type": "application/json"});
                     res.end('{ "response" : "mail error" }');
                 }
                 res.writeHead(200, {"Content-Type": "application/json"});
