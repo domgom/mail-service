@@ -1,1 +1,5 @@
-curl localhost:8000  --header "x-template: test.hbs" --header "x-presets: confirmationEmail.json" -d '{"name" : "Dom"}' --header "x-to: xxx@gmail.com"
+curl localhost:8000  \
+--header "x-template: test.hbs" \
+--header "x-presets: confirmationEmail.json" \
+--header "x-to: xxx@gmail.com" \
+-d '{"name" : "Dom"}'
