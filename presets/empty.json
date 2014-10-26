@@ -1,8 +1,7 @@
 {
+  "template": "empty.hbs",
+
   "from": "",
   "subject": "",
-  "to": "",
-  "cc": "",
-  "cco": "",
-  "templatePath": "empty.hbs"
+  "to": ""
 }
