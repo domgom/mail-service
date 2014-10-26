@@ -4,12 +4,10 @@ var hbs = require('handlebars');
 var concat = require('concat-stream');
 var mailer = require('./mailer');
 
-var templates = compileTemplates();
-
-//console.log(templates);
+var templates = {}; //Map cache with all the compiled hbs templates
+compileTemplates();
 
 http.createServer(function (req, res) {
-
     if (req.method == 'POST') {
         var variables = {};
         req.pipe(concat(function (body) {
@@ -41,15 +39,16 @@ function loadMailMetaData(req) {
 }
 
 function compileTemplates() {
-    var result = {};
-    var templateFiles = fs.readdirSync(__dirname + "/templates/");
-    for (var i in templateFiles) {
-        var name = templateFiles[i];
-
-        fs.readFile(__dirname + "/templates/" + name, "utf-8", function (error, source) {
-            result[name] = hbs.compile(source);
+    fs.readdir(__dirname + "/templates/", function (error, files) {
+        files.forEach(function (file) {
+            compileTemplate(file);
         });
+    });
+}
 
-    }
-    return result;
+function compileTemplate(name) {
+    fs.readFile(__dirname + "/templates/" + name, "utf-8", function (error, source) {
+        console.log("compiling " + name);
+        templates[name] = hbs.compile(source);
+    });
 }
